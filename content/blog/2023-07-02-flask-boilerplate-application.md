@@ -6,7 +6,11 @@ description: A basic flask boilerplate application with a database and working
 ---
 # Flask Boilerplate
 
-[Flask Boilerplate.zip](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a3c1c6bb-8e37-4fbc-8f1b-8f552d40925c/Flask_Boilerplate.zip)
+[](https://github.com/Throupy/Flask-Boilerplate)[GitHub Link](https://github.com/Throupy/Flask-Boilerplate)
+
+```
+git clone https://github.com/Throupy/Flask-Boilerplate.git
+```
 
 ## Requirements
 
