@@ -4,6 +4,7 @@ date: 2023-07-02T19:11:00.743Z
 description: A writeup for performing a buffer overflow attack using immunity
   debugger. This was written in the context of completing the HTB box called
   "Brainpan".
+tags: [writeup]
 ---
 ## Context
 
