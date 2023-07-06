@@ -5,18 +5,6 @@ tags:
   - writeup
 description: My solution for the HackTheBox machine called "Support"
 ---
-
-
-```csharp
-  public LdapQuery()
-  {
-      string password = Protected.getPassword();
-      this.entry = new DirectoryEntry("LDAP://support.htb", "support\\ldap", password);
-      this.entry.AuthenticationType = AuthenticationTypes.Secure;
-      this.ds = new DirectorySearcher(this.entry);
-  }
-```
-
 The target machine resided on the address `10.129.227.255` and I modified by hosts file as follows:
 
 ```
@@ -197,7 +185,6 @@ $ ruby evil-winrm.rb -i support.htb -u support -p Ironside47pleasure40Watchful
 Evil-WinRM> cd C:\Users\Support\Desktop
 Evil-WinRM> type user.txt
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
 ```
 
 ## Visualising AD with Bloodhound
@@ -234,7 +221,7 @@ Bloodhound allowed me to perform a lot of analysis on the AD environment, such a
 
 ## Exploiting Constraint Delegation
 
-`GenericAll` privilege sounded promising for a privilege escalation, so I began to research and came across [this](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation) HackTricks entry about resource-based constrained delegation (sounds scary), which had a basic walkthrough of exploiting a misconfiguration wherein I had the `GenericAll `privilege over another computer (the domain controller (DC), in this case).
+`GenericAll` privilege sounded promising for a privilege escalation, so I began to research and came across [this](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation) HackTricks entry about resource-based constrained delegation (sounds scary), which had a basic walkthrough of exploiting a misconfiguration wherein I had the `GenericAll`privilege over another computer (the domain controller (DC), in this case).
 
 Because I have write equivalent privileges over the domain controller account, I can obtain privileged access to that machine, meaning I can execute commands as the administrator, by creating a kerberos ticket and impersonating them. I followed the referenced guide as shown below.
 
