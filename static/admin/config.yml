@@ -4,6 +4,16 @@ backend:
 media_folder: static/img
 public_folder: /img
 collections:
+  - name: 'tags'
+    label: 'Tags'
+    folder: 'content/tags'
+    create: true
+    slug: '{{name}}'
+    identifier_field: 'name'
+    summary: '{{name}}'
+    fields:
+      - {name: 'name', label: 'Name'}
+
   - name: 'blog'
     label: 'Blog'
     folder: 'content/blog'
