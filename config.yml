@@ -68,11 +68,9 @@ params:
     Content: Welcome to my blog
   socialIcons:
     - name: twitter
-      url: 'https://twitter.com/'
-    - name: stackoverflow
-      url: 'https://stackoverflow.com'
+      url: 'https://twitter.com/OThroupy'
     - name: github
-      url: 'https://github.com/'
+      url: 'https://github.com/throupy'
   analytics:
     google:
       SiteVerificationTag: XYZabc
@@ -100,17 +98,4 @@ params:
       - permalink
       - summary
       - content
-menu:
-  main:
-    - identifier: categories
-      name: categories
-      url: /categories/
-      weight: 10
-    - identifier: tags
-      name: tags
-      url: /tags/
-      weight: 20
-    - identifier: example
-      name: example.org
-      url: 'https://example.org'
-      weight: 30
+
