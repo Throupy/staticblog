@@ -1,6 +1,8 @@
 ---
 title: TryHackMe The Marketplace Writeup
 date: 2023-07-05T13:34:41.636Z
+tags:
+  - writeup
 description: My solution for the TryHackMe Room "The marketplace"
 ---
 In this writeup, I will share my journey through the TryHackMe room "The Marketplace." This room offers a medium level of difficulty and delves into fascinating topics such as XSS (cross-site scripting), SQL Injection, and privilege escalation techniques. The target machine's IP address was `10.10.15.67`.
