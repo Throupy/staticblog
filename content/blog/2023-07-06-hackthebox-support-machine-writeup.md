@@ -1,6 +1,8 @@
 ---
 title: HackTheBox Support Machine Writeup
 date: 2023-07-06T11:17:38.517Z
+tags:
+  - writeup
 description: My solution for the HackTheBox machine called "Support"
 ---
 

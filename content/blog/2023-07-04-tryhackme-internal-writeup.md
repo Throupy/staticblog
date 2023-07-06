@@ -1,6 +1,8 @@
 ---
 title: TryHackMe Internal Writeup
 date: 2023-07-04T18:50:06.913Z
+tags:
+  - writeup
 description: "A writeup of my solution for the TryHackMe 'Internal' machine "
 ---
 ## Reconnaissance
