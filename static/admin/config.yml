@@ -5,7 +5,7 @@ media_folder: static/img
 public_folder: /img
 collections:
   - name: 'tags'
-    label: 'Tags'
+    label: 'Categories'
     folder: 'content/tags'
     create: true
     slug: '{{name}}'
@@ -28,9 +28,9 @@ collections:
         label: 'Tags'
         widget: 'relation'
         collection: 'tags'
-        search_fields: ['writeup']
-        value_field: 'writeup'
-        display_fields: ['writeup']
+        search_fields: ['name']
+        value_field: 'name'
+        display_fields: ['name']
         multiple: true
       - { label: 'Description', name: 'description', widget: 'string' }
       - { label: 'Body', name: 'body', widget: 'markdown' }
