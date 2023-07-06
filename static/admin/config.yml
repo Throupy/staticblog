@@ -14,5 +14,13 @@ collections:
     fields:
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+      - name: 'tags'
+        label: 'Tags'
+        widget: 'relation'
+        collection: 'tags'
+        search_fields: ['writeup']
+        value_field: 'writeup'
+        display_fields: ['writeup']
+        multiple: true
       - { label: 'Description', name: 'description', widget: 'string' }
       - { label: 'Body', name: 'body', widget: 'markdown' }
