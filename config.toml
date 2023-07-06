@@ -1,3 +1,4 @@
 baseURL = 'https://throupy.xyz'
 languageCode = 'en-us'
 title = "Throupy's Blog"
+theme: "PaperModX"
