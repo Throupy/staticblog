@@ -67,6 +67,7 @@ params:
   homeInfoParams:
     Title: "Hi there \U0001F44B"
     Content: Welcome to my blog
+    ImageUri: 'img/portrait.jpeg'
   socialIcons:
     - name: twitter
       url: 'https://twitter.com/OThroupy'
