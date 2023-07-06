@@ -3,13 +3,6 @@
   <header class="entry-header">
     <h1>{{ .Title | markdownify }}</h1>
   </header>
-  {{- if .ImageUri -}}
-  {{- $img := resources.Get .ImageUri }}
-  {{- if $img }}
-  <img src="{{ $img.Permalink }}" alt="{{ .imageTitle | default "profile image" }}"
-  height="{{ .imageHeight | default 150 }}" width="{{ .imageWidth | default 150 }}" />
-  {{- end }}
-  {{- end }}
   <section class="entry-content">
     {{- trim .Content "\n" | markdownify -}}
   </section>

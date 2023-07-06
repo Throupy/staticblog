@@ -41,14 +41,14 @@ mark {
 .first-entry {
     position: relative;
     min-height: 320px;
-    margin: var(--gap) 0 calc(var(--gap) * 2) 0;
+    /* margin: var(--gap) 0 calc(var(--gap) * 2) 0 */
 }
 
 .first-entry .entry-header {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    margin: var(--gap) 0 calc(var(--gap) * 2);
+    /* margin: var(--gap) 0 calc(var(--gap) * 2) */;
 }
 
 .first-entry .entry-header h1 {
