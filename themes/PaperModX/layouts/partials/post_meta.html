@@ -7,21 +7,24 @@
 {{- if (.Param "ShowReadingTime") -}}
 <span class="meta-item">
   <span>
-    {{- i18n "read_time" .ReadingTime | default (printf "%d min" .ReadingTime) -}} 
-    &#x2022;</span></span>
+    {{- i18n "read_time" .ReadingTime | default (printf "%d min" .ReadingTime) -}} &#x2022;
+  </span>
+</span>
 {{- end }}
 
 {{- if (.Param "ShowWordCount") -}}
 <span class="meta-item">
   <span>
-    {{- i18n "words" .WordCount | default (printf "%d words" .WordCount) -}}
-    &#x2022;</span></span>
+    {{- i18n "words" .WordCount | default (printf "%d words" .WordCount) -}} &#x2022;
+  </span>
+</span>
 {{- end }}
 
 
 {{- if (.Param "ShowAuthor") -}}
 <span class="meta-item">
-  &#x2022;{{- partial "author.html" . -}}</span>
+  {{- partial "author.html" . -}} &#x2022;
+</span>
 {{- end }}
 
 
@@ -40,14 +43,17 @@
     </a>
     {{- end }}
   {{- end }}
-  &#x2022;</span></span>
+  &#x2022;
+  </span>
+</span>
 {{- end }}
 
 {{- if .Params.tags -}}
 <span class="meta-item">
   <span class="post-tags">
     {{- range ($.GetTerms "tags") -}}
-    <span>{{ .LinkTitle }}</span>
+    <span>{{ .LinkTitle }}</span> 
     {{- end -}}
-    &#x2022;</span></span>
+  </span> &#x2022;
+</span>
 {{- end }}
