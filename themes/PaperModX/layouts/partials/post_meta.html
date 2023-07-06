@@ -4,12 +4,10 @@
 </span>
 {{- end }}
 
-{{- if .Params.tags -}}
+{{- if (.Param "ShowReadingTime") -}}
 <span class="meta-item">
-  <span class="post-tags">
-    {{- range ($.GetTerms "tags") -}}
-    <span>{{ .LinkTitle }}, </span>
-    {{- end -}}
+  <span>
+    {{- i18n "read_time" .ReadingTime | default (printf "%d min" .ReadingTime) -}} 
     &#x2022;</span></span>
 {{- end }}
 
@@ -17,14 +15,6 @@
 <span class="meta-item">
   <span>
     {{- i18n "words" .WordCount | default (printf "%d words" .WordCount) -}}
-    &#x2022;</span></span>
-{{- end }}
-
-
-{{- if (.Param "ShowReadingTime") -}}
-<span class="meta-item">
-  <span>
-    {{- i18n "read_time" .ReadingTime | default (printf "%d min" .ReadingTime) -}}
     &#x2022;</span></span>
 {{- end }}
 
@@ -51,4 +41,13 @@
     {{- end }}
   {{- end }}
   &#x2022;</span></span>
+{{- end }}
+
+{{- if .Params.tags -}}
+<span class="meta-item">
+  <span class="post-tags">
+    {{- range ($.GetTerms "tags") -}}
+    <span>{{ .LinkTitle }}</span>
+    {{- end -}}
+    &#x2022;</span></span>
 {{- end }}
