@@ -39,6 +39,7 @@ params:
   hidemeta: false
   hideSummary: false
   showtoc: true
+  TocSide: 'right'
   tocopen: true
   assets:
     favicon: <link / abs url>
