@@ -1,8 +1,8 @@
 ---
-title: HTB Brainpan - Buffer Overflow Writeup
+title: TryHackMe Brainpan - Buffer Overflow Writeup
 date: 2023-07-02T19:11:00.743Z
 description: A writeup for performing a buffer overflow attack using immunity
-  debugger. This was written in the context of completing the HTB box called
+  debugger. This was written in the context of completing the THM box called
   "Brainpan".
 ---
 ## Context
