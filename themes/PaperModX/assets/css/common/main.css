@@ -259,6 +259,12 @@ figure > img {
     text-align: center;
 }
 
+.feather
+.svg-text {
+    vertical-align: middle;
+    display: inline-block;
+}
+
 .image-size-control {
     margin-left: auto;
     margin-right: auto;
