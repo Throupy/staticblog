@@ -40,7 +40,7 @@ mark {
 /* for home and section page */
 .first-entry {
     position: relative;
-    min-height: 320px;
+    min-height: 40px;
     /* margin: var(--gap) 0 calc(var(--gap) * 2) 0 */
 }
 
