@@ -30,8 +30,8 @@ params:
   ShowShareButtons: true
   ShowPostNavLinks: true
   ShowBreadCrumbs: true
-  ShowWordCount: true
-  ShowAuthor: true
+  ShowWordCount: false
+  ShowAuthor: false
   ShowCodeCopyButtons: false
   disableSpecial1stPost: false
   disableScrollToTop: false
@@ -40,7 +40,7 @@ params:
   hideSummary: false
   showtoc: true
   TocSide: 'right'
-  tocopen: true
+  tocopen: false
   assets:
     favicon: <link / abs url>
     favicon16x16: <link / abs url>
