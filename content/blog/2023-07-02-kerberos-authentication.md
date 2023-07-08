@@ -1,6 +1,8 @@
 ---
 title: Kerberos Authentication
 date: 2023-07-02T18:56:23.473Z
+tags:
+  - informative
 description: A look at how Kerberos authentication works on Windows networks.
   First blog post so testing how CMS functions and if markdown working as
   expected.
