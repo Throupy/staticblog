@@ -1,7 +1,8 @@
 ---
 title: Evading AV
 date: 2023-07-08T22:12:14.963Z
-tags: []
+tags:
+  - informative
 description: A short blog post which touches ways to create payloads which have
   more a chance to evade anti-virus solutions.
 ---
