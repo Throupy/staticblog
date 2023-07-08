@@ -1,6 +1,9 @@
 ---
 title: Wi-Fi De-Authentication Attack Demonstration
 date: 2023-07-02T19:03:55.149Z
+tags:
+  - demo
+  - informative
 description: A supporting document for performing a Wi-Fi De-Authentication
   attack in a controlled environment.
 ---
