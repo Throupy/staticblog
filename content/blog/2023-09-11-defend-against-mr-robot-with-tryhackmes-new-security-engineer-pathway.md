@@ -6,13 +6,11 @@ tags:
 description: TryHackMe just released a new security engineer pathway, and it's
   awesome! Read more about this opportunity in this blog post.
 ---
-In the modern world, digital threats loom large and data breaches make headlines almost every day. There is an ever-growing demand for skilled cybersecurity professionals, and the salaries can be attractive! But where do you start? If you have thought about a career in cybersecurity, there has never been a better time to start. And with TryHackMe's brand new Security Engineer learning path, you can pave your way towards building fundamental knowledge and becoming an expert!
+In the modern world, digital threats loom large and data breaches make headlines almost every day. There is an ever-growing demand for skilled cybersecurity professionals, and the salaries can be attractive! But where do you start? If you have thought about a career in cybersecurity, there has never been a better time to start. And with TryHackMe's brand new Security Engineer learning path, you can pave your way towards becoming an expert!
 
 ### Why TryHackMe?
 
 I've been using TryHackMe for a little over a year now, I subscribed to their paid plan after I got my feet wet and what can I say? Worth. Every. Penny. What I love about TryHackMe compared to other platforms (cough cough HackTheBox), is that, like other platforms, you can be thrown in the deep end with their CTF-style machines, or you can take a guided walkthrough of a particular subject. It is so easy to be disheartened with a CTF machine because you don't know where to start / you don't get it, but with TryHackMe's guided learning pathways, you have the supporting content you need to get through and achieve that sweet sweet root.
-
-
 
 ### What Content Is Inside The Security Engineer Pathway?
 
